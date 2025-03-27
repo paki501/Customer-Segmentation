@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mall Customer Segmentation</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        input { padding: 10px; margin: 10px; width: 200px; }
+        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        #result { margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+    <h2>Mall Customer Segmentation</h2>
+    <p>Enter customer details to predict their segment</p>
+
+    <input type="number" id="age" placeholder="Age" required><br>
+    <input type="number" id="income" placeholder="Annual Income (k$)" required><br>
+    <input type="number" id="spending" placeholder="Spending Score" required><br>
+
+    <button onclick="predictSegment()">Predict Segment</button>
+
+    <div id="result"></div>
+
+    <script>
+        function predictSegment() {
+            let age = document.getElementById("age").value;
+            let income = document.getElementById("income").value;
+            let spending = document.getElementById("spending").value;
+
+            if (age === "" || income === "" || spending === "") {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            fetch(`http://127.0.0.1:8000/predict?age=${age}&income=${income}&spending_score=${spending}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerHTML = `<p><strong>Predicted Cluster:</strong> ${data["Predicted Cluster"]}</p>`;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+
+</body>
+</html>
